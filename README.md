@@ -73,11 +73,15 @@ const MISTAKES = [
     { substring: "-", contexts: PATTERNS_MISTAKE_NB_HYPHEN },
 ];
 
+function markWith(className: string): (info: string | null) => (s: string) => string {
+    return _ => s => `<pre class="${className}">${s}</pre>`;
+}
+
 const highlight = highlightWith({
     mistakes: MISTAKES,
     verify: PATTERN_VERIFY,
     identifiers: { mistake: "mistake", verified: "verified" },
-    markWith: (identifier: string) => (s: string) => `<pre class="${identifier}">${s}</pre>`,
+    markWith,
 });
 
 console.log(highlight("G-Sync is from Nvidia, the up to 4.7&nbsp;GHz Core i7-8700K is from Intel, and 240 Hz monitors are great for gaming."));

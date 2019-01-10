@@ -24,6 +24,6 @@ export const PATTERNS_MISTAKE_ENDASH = [
 
 export const MISTAKES = [
     { substring: " ", contexts: PATTERNS_MISTAKE_NB_SPACE },
-    { substring: "-", contexts: PATTERNS_MISTAKE_NB_HYPHEN },
-    { substring: "-", contexts: PATTERNS_MISTAKE_ENDASH },
+    { substring: "-", contexts: PATTERNS_MISTAKE_NB_HYPHEN, info: "non-breaking hyphen" },
+    { substring: "-", contexts: PATTERNS_MISTAKE_ENDASH, info: "en dash" },
 ];

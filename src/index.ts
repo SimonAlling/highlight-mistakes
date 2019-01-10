@@ -30,32 +30,35 @@ described as a list of regular expressions.
 export type Mistake = Readonly<{
     contexts: ReadonlyArray<RegExp>, // e.g. [ /\d [kMG]?(?:bit|B)/, /4K UHD/ ]
     substring?: string, // e.g. " "; undefined means replace everything
+    info?: string, // e.g. "non-breaking space", can be used for tooltips etc
 }>;
 
 export type StringTransformer = (x: string) => string;
+
+const NO_INFO = null;
 
 export function highlightWith(c: {
     mistakes: ReadonlyArray<Mistake>,
     verify: RegExp,
     identifiers: Readonly<{ mistake: string, verified: string }>,
-    markWith: (identifier: string) => StringTransformer,
+    markWith: (identifier: string) => (info: string | null) => StringTransformer,
 }): StringTransformer {
     return compose(
         highlightMistakesWith(c.mistakes, c.markWith(c.identifiers.mistake)),
-        highlightVerifiedWith(c.verify, c.markWith(c.identifiers.verified)),
+        highlightVerifiedWith(c.verify, c.markWith(c.identifiers.verified)(NO_INFO)),
     );
 }
 
 export function highlightMistakesWith(
     mistakes: ReadonlyArray<Mistake>,
-    mark: StringTransformer,
+    mark: (info: string | null) => StringTransformer,
 ): StringTransformer {
-    function replacer(substring?: string) {
+    function replacer(info: string | null, substring?: string) {
         // If substring is undefined, highlight entire phrase:
         const transform = (
             substring === undefined
-            ? mark
-            : (s: string) => s.split(substring).join(mark(substring))
+            ? mark(info)
+            : (s: string) => s.split(substring).join(mark(info)(substring))
         );
         return (match: string, ...rest: Array<string | number | undefined>) => {
             const captured = rest.find(x => x !== undefined);
@@ -72,7 +75,7 @@ export function highlightMistakesWith(
         };
     }
     const transformers = mistakes.map(m =>
-        (text: string) => text.replace(join(m.contexts), replacer(m.substring))
+        (text: string) => text.replace(join(m.contexts), replacer(m.info || null, m.substring))
     );
     return transformers.reduceRight(compose, x => x);
 }
