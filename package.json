@@ -1,0 +1,68 @@
+{
+  "name": "highlight-mistakes",
+  "version": "0.1.0",
+  "description": "Highlight mistakes and their absence in a piece of text.",
+  "keywords": [
+    "highlight",
+    "mistakes",
+    "verify",
+    "text",
+    "grammar",
+    "typography",
+    "correct",
+    "proof",
+    "NBSP",
+    "non-breaking",
+    "space",
+    "hyphen"
+  ],
+  "author": {
+    "name": "Simon Alling",
+    "email": "alling.simon@gmail.com",
+    "url": "https://simonalling.se"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/simonalling/highlight-mistakes",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/simonalling/highlight-mistakes"
+  },
+  "bugs": {
+    "url": "https://github.com/simonalling/highlight-mistakes"
+  },
+  "main": "dist/index",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "lint": "tslint --project .",
+    "test": "jest",
+    "verify": "npm run build && npm run lint && npm run test",
+    "build": "npm run clean && tsc -d -p . && npm run rename && tsc --module CommonJS -p .",
+    "prepublishOnly": "npm run verify",
+    "clean": "rm -rf dist/*",
+    "rename": "renamer --force --find \"/\\.js$/\" --replace \".mjs\" \"dist/**\""
+  },
+  "sideEffects": false,
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "/__tests__/.+\\.test\\.ts$",
+    "moduleFileExtensions": [
+      "ts",
+      "js",
+      "json",
+      "node"
+    ]
+  },
+  "devDependencies": {
+    "@types/jest": "^23.3.12",
+    "jest": "^23.6.0",
+    "renamer": "^1.1.1",
+    "ts-jest": "^23.10.5",
+    "tslint": "^5.12.0",
+    "typescript": "^3.2.2"
+  }
+}

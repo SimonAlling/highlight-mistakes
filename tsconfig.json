@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "lib": [
+            "es6",
+        ],
+        "sourceMap": true,
+        "target": "es2017",
+        "declaration": true,
+        "strictNullChecks": true,
+        "noImplicitAny": true,
+        "module": "es2015",
+        "removeComments": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "esModuleInterop": true,
+        "moduleResolution": "node",
+        "outDir": "dist",
+        "preserveConstEnums": true
+    },
+    "files": [
+        "src/index.ts"
+    ]
+}
