@@ -43,9 +43,11 @@ export function highlightWith(c: {
     identifiers: Readonly<{ mistake: string, verified: string }>,
     markWith: (identifier: string) => (info: string | null) => StringTransformer,
 }): StringTransformer {
+    // Must do it in this order to avoid cluttering text with "verified" markers
+    // before finding mistakes.
     return compose(
-        highlightMistakesWith(c.mistakes, c.markWith(c.identifiers.mistake)),
         highlightVerifiedWith(c.verify, c.markWith(c.identifiers.verified)(NO_INFO)),
+        highlightMistakesWith(c.mistakes, c.markWith(c.identifiers.mistake)),
     );
 }
 

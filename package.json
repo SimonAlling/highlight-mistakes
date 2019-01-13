@@ -1,6 +1,6 @@
 {
   "name": "highlight-mistakes",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Highlight mistakes and their absence in a piece of text.",
   "keywords": [
     "highlight",
