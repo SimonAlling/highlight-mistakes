@@ -38,7 +38,7 @@
   "scripts": {
     "lint": "tslint --project .",
     "test": "jest",
-    "verify": "npm run build && npm run lint && npm run test",
+    "verify": "npm run lint && npm run build && npm run test",
     "build": "npm run clean && tsc -d -p . && npm run rename && tsc --module CommonJS -p .",
     "prepublishOnly": "npm run verify",
     "clean": "rm -rf dist/*",
