@@ -34,8 +34,7 @@ It is intended as a complementary tool for authoring and proof-reading written t
 To use `proofreadWith`, you have to define these things:
 
   * A list of rules describing what should be marked as a mistake and what should be verified as correct.
-  * Two identifiers, one for mistakes and one for verified non-mistakes.
-  * A function that highlights a single mistake/non-mistake.
+  * A function that highlights a single mistake and one for non-mistakes.
 
 `highlightWith` can be used to further process the output of `proofreadWith`, e.g. to make non-breaking spaces neither marked as correct nor incorrect visible to a human editor.
 
@@ -50,31 +49,38 @@ We also want non-breaking hyphens in "G‑Sync" and phrases like "i7‑8700K".
 That's also why we use `<pre>`; otherwise a highlighted space might not be visible at all.)
 
 ```typescript
-import { proofreadWith } from "highlight-mistakes";
+import { proofreadWith, simpleRule } from "highlight-mistakes";
 
-const PATTERNS_MISTAKE_NB_SPACE = [
-    /(\d+ [nµmcdkMGTP]?(?:Hz|b|bit|B|byte))\b/,
-    /Core i\d/,
+const DESC_NBSP = {
+    bad: " ",
+    good: "&nbsp;",
+    info: "NBSP",
+};
+
+const DESC_NBH = {
+    bad: "-",
+    good: "‑",
+    info: "NBH",
+};
+
+const RULES_NB_SPACE = [
+    simpleRule(DESC_NBSP)(/\d+/, /[nµmcdkMGTP]?(?:Hz|b|bit|B|byte)\b/),
+    simpleRule(DESC_NBSP)(/Core/, /i\d/),
 ];
 
-const PATTERNS_MISTAKE_NB_HYPHEN = [
-    /G-Sync/,
-    /i\d-\d{4}/,
+const RULES_NB_HYPHEN = [
+    simpleRule(DESC_NBH)(/G/, /Sync/),
+    simpleRule(DESC_NBH)(/i\d/, /\d{4}/),
 ];
 
-const RULES = [
-    { change: { from: " ", to: "&nbsp;" }, contexts: PATTERNS_MISTAKE_NB_SPACE },
-    { change: { from: "-", to: "‑" }, contexts: PATTERNS_MISTAKE_NB_HYPHEN },
-];
-
-function markWith(className: string): (info: string | null) => (s: string) => string {
+function markAs(className: string): (info: string | null) => (s: string) => string {
     return _ => s => `<pre class="${className}">${s}</pre>`;
 }
 
 const proofread = proofreadWith({
-    rules: RULES,
-    identifiers: { mistake: "mistake", verified: "verified" },
-    markWith,
+    rules: RULES_NB_SPACE.concat(RULES_NB_HYPHEN),
+    markMistake: markAs("mistake"),
+    markVerified: markAs("verified"),
 });
 
 console.log(proofread("G-Sync is from Nvidia, the up to 4.7&nbsp;GHz Core i7-8700K is from Intel, and 240 Hz monitors are great for gaming."));
